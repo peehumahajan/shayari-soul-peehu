@@ -11,6 +11,11 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuthProvider } from "@/hooks/useAuth";
+import { ThemeProvider } from "@/hooks/useTheme";
+import { BottomNav } from "@/components/AppShell";
+import { Toaster } from "@/components/ui/sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
   return (
@@ -76,20 +81,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      {
+        name: "viewport",
+        content: "width=device-width, initial-scale=1, viewport-fit=cover",
+      },
+      { title: "Ishq-e-Shayari — Mehfil of Poetry" },
+      {
+        name: "description",
+        content:
+          "Write, recite and discover original shayari in Hindi, Urdu, Roman and Punjabi. A poetic community by Shayar Peehu.",
+      },
+      { name: "author", content: "Shayar Peehu" },
+      { name: "theme-color", content: "#0B0709" },
+      { property: "og:title", content: "Ishq-e-Shayari — Mehfil of Poetry" },
+      {
+        property: "og:description",
+        content: "A poetic home for original shayari — words, voices and reels.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&family=Tiro+Devanagari+Hindi:ital@0;1&family=Noto+Nastaliq+Urdu:wght@400;600&family=Noto+Serif+Gurmukhi:wght@400;600&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -116,11 +137,29 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      router.invalidate();
+      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [router, queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <ThemeProvider>
+        <AuthProvider>
+          <div className="mx-auto min-h-screen max-w-lg pb-20">
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <Outlet />
+          </div>
+          <BottomNav />
+          <Toaster position="top-center" />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
