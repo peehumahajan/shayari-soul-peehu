@@ -66,12 +66,18 @@ function MePage() {
   };
 
   const uploadAvatar = async (file: File) => {
-    if (file.size > 5 * 1024 * 1024) return toast.error("Image must be under 5MB");
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be under 5MB");
+      return;
+    }
     const path = `${user!.id}/avatar-${Date.now()}`;
     const { error } = await supabase.storage
       .from("avatars")
       .upload(path, file, { contentType: file.type, upsert: true });
-    if (error) return toast.error("Upload failed");
+    if (error) {
+      toast.error("Upload failed");
+      return;
+    }
     await supabase.from("profiles").update({ avatar_url: path }).eq("id", user!.id);
     await refreshProfile();
     toast.success("Avatar updated");

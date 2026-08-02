@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as MeRouteImport } from './routes/me'
 import { Route as ReelsRouteImport } from './routes/reels'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as WriteRouteImport } from './routes/write'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeRoute = MeRouteImport.update({
+  id: '/me',
+  path: '/me',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReelsRoute = ReelsRouteImport.update({
@@ -44,6 +50,7 @@ const WriteRoute = WriteRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/me': typeof MeRoute
   '/reels': typeof ReelsRoute
   '/saved': typeof SavedRoute
   '/write': typeof WriteRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/me': typeof MeRoute
   '/reels': typeof ReelsRoute
   '/saved': typeof SavedRoute
   '/write': typeof WriteRoute
@@ -59,21 +67,23 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/me': typeof MeRoute
   '/reels': typeof ReelsRoute
   '/saved': typeof SavedRoute
   '/write': typeof WriteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/reels' | '/saved' | '/write'
+  fullPaths: '/' | '/auth' | '/me' | '/reels' | '/saved' | '/write'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/reels' | '/saved' | '/write'
-  id: '__root__' | '/' | '/auth' | '/reels' | '/saved' | '/write'
+  to: '/' | '/auth' | '/me' | '/reels' | '/saved' | '/write'
+  id: '__root__' | '/' | '/auth' | '/me' | '/reels' | '/saved' | '/write'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  MeRoute: typeof MeRoute
   ReelsRoute: typeof ReelsRoute
   SavedRoute: typeof SavedRoute
   WriteRoute: typeof WriteRoute
@@ -93,6 +103,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reels': {
@@ -122,6 +139,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  MeRoute: MeRoute,
   ReelsRoute: ReelsRoute,
   SavedRoute: SavedRoute,
   WriteRoute: WriteRoute,
