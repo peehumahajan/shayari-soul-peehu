@@ -21,7 +21,7 @@ export type PostRow = {
 };
 
 const SELECT =
-  "id, author_id, kind, body, script, category, video_url, status, like_count, comment_count, created_at, profiles!posts_author_id_fkey(username, display_name, avatar_url, is_premium)";
+  "id, author_id, kind, body, script, category, video_url, status, like_count, comment_count, created_at, profiles!posts_author_profile_fkey(username, display_name, avatar_url, is_premium)";
 
 type FeedOptions = {
   sort?: "trending" | "fresh";
@@ -119,7 +119,7 @@ export async function reportPost(postId: string, uid: string, reason: string) {
 export async function fetchComments(postId: string) {
   const { data, error } = await supabase
     .from("comments")
-    .select("id, body, created_at, user_id, profiles!comments_user_id_fkey(username, avatar_url)")
+    .select("id, body, created_at, user_id, profiles!comments_user_profile_fkey(username, avatar_url)")
     .eq("post_id", postId)
     .order("created_at", { ascending: false });
   if (error) throw error;
