@@ -16,6 +16,7 @@ import { Route as ReelsRouteImport } from './routes/reels'
 import { Route as SavedRouteImport } from './routes/saved'
 import { Route as WriteRouteImport } from './routes/write'
 import { Route as ShayariIdRouteImport } from './routes/shayari.$id'
+import { Route as UUsernameRouteImport } from './routes/u.$username'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +53,11 @@ const ShayariIdRoute = ShayariIdRouteImport.update({
   path: '/shayari/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UUsernameRoute = UUsernameRouteImport.update({
+  id: '/u/$username',
+  path: '/u/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/saved': typeof SavedRoute
   '/write': typeof WriteRoute
   '/shayari/$id': typeof ShayariIdRoute
+  '/u/$username': typeof UUsernameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/saved': typeof SavedRoute
   '/write': typeof WriteRoute
   '/shayari/$id': typeof ShayariIdRoute
+  '/u/$username': typeof UUsernameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,13 +88,29 @@ export interface FileRoutesById {
   '/saved': typeof SavedRoute
   '/write': typeof WriteRoute
   '/shayari/$id': typeof ShayariIdRoute
+  '/u/$username': typeof UUsernameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/me' | '/reels' | '/saved' | '/write' | '/shayari/$id'
+    | '/'
+    | '/auth'
+    | '/me'
+    | '/reels'
+    | '/saved'
+    | '/write'
+    | '/shayari/$id'
+    | '/u/$username'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/me' | '/reels' | '/saved' | '/write' | '/shayari/$id'
+  to:
+    | '/'
+    | '/auth'
+    | '/me'
+    | '/reels'
+    | '/saved'
+    | '/write'
+    | '/shayari/$id'
+    | '/u/$username'
   id:
     | '__root__'
     | '/'
@@ -96,6 +120,7 @@ export interface FileRouteTypes {
     | '/saved'
     | '/write'
     | '/shayari/$id'
+    | '/u/$username'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +131,7 @@ export interface RootRouteChildren {
   SavedRoute: typeof SavedRoute
   WriteRoute: typeof WriteRoute
   ShayariIdRoute: typeof ShayariIdRoute
+  UUsernameRoute: typeof UUsernameRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -159,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShayariIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/u/$username': {
+      id: '/u/$username'
+      path: '/u/$username'
+      fullPath: '/u/$username'
+      preLoaderRoute: typeof UUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -170,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   SavedRoute: SavedRoute,
   WriteRoute: WriteRoute,
   ShayariIdRoute: ShayariIdRoute,
+  UUsernameRoute: UUsernameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
