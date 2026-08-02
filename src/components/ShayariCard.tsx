@@ -16,10 +16,10 @@ export function ShayariCard({
   rank,
 }: {
   post: PostRow;
-  liked?: boolean;
-  saved?: boolean;
-  onChanged?: () => void;
-  rank?: number;
+  liked?: boolean | undefined;
+  saved?: boolean | undefined;
+  onChanged?: (() => void) | undefined;
+  rank?: number | undefined;
 }) {
   const { user, profile } = useAuth();
 
