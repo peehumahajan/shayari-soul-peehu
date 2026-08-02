@@ -31,7 +31,7 @@ type Queue = {
   kind: string;
   status: string;
   created_at: string;
-  moderation_note: string | null;
+  trending_score: number;
 };
 
 function AdminPage() {
@@ -42,12 +42,12 @@ function AdminPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("id, body, script, kind, status, created_at, moderation_note")
+        .select("id, body, script, kind, status, created_at, trending_score")
         .in("status", ["pending", "hidden"])
         .order("created_at", { ascending: false })
         .limit(50);
       if (error) throw error;
-      return (data ?? []) as Queue[];
+      return (data ?? []) as unknown as Queue[];
     },
     enabled: isAdmin,
   });
@@ -57,8 +57,8 @@ function AdminPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reports")
-        .select("id, reason, status, created_at, post_id, posts(body, script, status)")
-        .eq("status", "open")
+        .select("id, reason, resolved, created_at, post_id, posts(body, script, status)")
+        .eq("resolved", false)
         .order("created_at", { ascending: false })
         .limit(50);
       if (error) throw error;
@@ -93,7 +93,7 @@ function AdminPage() {
   };
 
   const resolve = async (reportId: string) => {
-    await supabase.from("reports").update({ status: "resolved" }).eq("id", reportId);
+      await supabase.from("reports").update({ resolved: true }).eq("id", reportId);
     void reports.refetch();
   };
 
@@ -113,7 +113,6 @@ function AdminPage() {
                 </p>
                 <p className="mt-2 font-ui text-xs text-muted-foreground">
                   {p.kind} · {p.status} · {timeAgo(p.created_at)}
-                  {p.moderation_note ? ` · ${p.moderation_note}` : ""}
                 </p>
                 <div className="mt-3 flex gap-2">
                   <Button size="sm" onClick={() => setStatus(p.id, "live")}>
