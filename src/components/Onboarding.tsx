@@ -30,7 +30,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
         <p className="font-ui text-xs tracking-[0.3em] text-muted-foreground uppercase">
           {slide.title}
         </p>
-        <p className="script-hi mt-8 text-3xl leading-relaxed whitespace-pre-wrap text-foreground">
+        <p className="script-hindi mt-8 text-3xl leading-relaxed whitespace-pre-wrap text-foreground">
           {slide.line}
         </p>
         <p className="mt-6 max-w-xs text-sm text-muted-foreground">{slide.caption}</p>
