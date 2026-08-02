@@ -70,6 +70,13 @@ export type Database = {
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "comments_user_profile_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       likes: {
@@ -141,7 +148,15 @@ export type Database = {
           trending_score?: number
           video_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "posts_author_profile_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
